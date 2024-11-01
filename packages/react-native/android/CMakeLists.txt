@@ -23,11 +23,22 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/build/onnxruntime/headers
 )
 
-target_link_libraries(
-  ${PROJECT_NAME} 
-  ${OpenCV_LIBS}
-  ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
-  ReactAndroid::jsi
-  ReactAndroid::reactnativejni
-)
-
+# https://github.com/react-native-community/discussions-and-proposals/discussions/816
+# This if-then-else can be removed once this library does not support version below 0.76
+if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
+  target_link_libraries(
+    ${PROJECT_NAME} 
+    ${OpenCV_LIBS}
+    ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
+    ReactAndroid::jsi
+    ReactAndroid::reactnative
+  )
+else()
+  target_link_libraries(
+    ${PROJECT_NAME} 
+    ${OpenCV_LIBS}
+    ${CMAKE_SOURCE_DIR}/build/onnxruntime/jni/${CMAKE_ANDROID_ARCH_ABI}/libonnxruntime.so
+    ReactAndroid::jsi
+    ReactAndroid::reactnativejni
+  )
+endif()
